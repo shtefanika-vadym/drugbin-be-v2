@@ -2,14 +2,20 @@ import type { ExecutionContext } from '@nestjs/common'
 import { createParamDecorator } from '@nestjs/common'
 
 /**
- * retrieve the current user with a decorator
- * example of a controller method:
+ * Retrieve user data from dto
+ * @param data The property path to retrieve from user object
+ * @example
+ * // Get user id
  * @Post()
- * someMethod(@User() user: User) {
- *   // do something with the user
- * }
+ * someMethod(@User('id') userId: string)
+ *
+ * // Get entire user object
+ * @Get()
+ * getUser(@User() user: User)
  */
-export const User = createParamDecorator((data: unknown, ctx: ExecutionContext) => {
+export const User = createParamDecorator((data: string | undefined, ctx: ExecutionContext) => {
   const request = ctx.switchToHttp().getRequest()
-  return request.user
+  const user = request.user
+
+  return data ? user?.[data] : user
 })

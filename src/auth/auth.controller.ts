@@ -1,11 +1,10 @@
-import { Body, Controller, Get, HttpCode, HttpStatus, Post, UseGuards } from '@nestjs/common'
-import { AuthGuard } from '@nestjs/passport'
+import { Body, Controller, HttpCode, HttpStatus, Post } from '@nestjs/common'
 import { ApiBody, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger'
 
 import { AuthService } from '@/auth/auth.service'
-import { LoginRequest } from '@/auth/models/request/login.request'
-import { SignupRequest } from '@/auth/models/request/signup.request'
-import { LoginResponse } from '@/auth/models/response/login.response'
+import { LoginResponseDto } from '@/auth/dto/login-response.dto'
+import { LoginDto } from '@/auth/dto/login.dto'
+import { SignupDto } from '@/auth/dto/signup.dto'
 
 @ApiTags('auth')
 @Controller('auth')
@@ -15,30 +14,18 @@ export class AuthController {
   @Post('signup')
   @HttpCode(HttpStatus.CREATED)
   @ApiOperation({ summary: 'Register a new user' })
-  @ApiBody({ type: SignupRequest })
+  @ApiBody({ type: SignupDto })
   @ApiResponse({ status: HttpStatus.CREATED, description: 'User successfully created' })
-  @ApiResponse({ status: HttpStatus.CONFLICT, description: 'Username or email already exists' })
-  @ApiResponse({ status: HttpStatus.BAD_REQUEST, description: 'Invalid input' })
-  async signup(@Body() signupRequest: SignupRequest): Promise<void> {
+  async signup(@Body() signupRequest: SignupDto): Promise<void> {
     await this.authService.signup(signupRequest)
   }
 
   @Post('login')
   @HttpCode(HttpStatus.OK)
   @ApiOperation({ summary: 'Login with email and password' })
-  @ApiBody({ type: LoginRequest })
-  @ApiResponse({ status: HttpStatus.OK, type: LoginResponse, description: 'Login successful' })
-  @ApiResponse({ status: HttpStatus.UNAUTHORIZED, description: 'Invalid credentials' })
-  async login(@Body() loginRequest: LoginRequest): Promise<LoginResponse> {
-    return new LoginResponse(await this.authService.login(loginRequest))
-  }
-
-  @Get('profile')
-  @UseGuards(AuthGuard())
-  @ApiOperation({ summary: 'Get user profile' })
-  @ApiResponse({ status: HttpStatus.OK, description: 'User profile retrieved successfully' })
-  @ApiResponse({ status: HttpStatus.UNAUTHORIZED, description: 'Unauthorized' })
-  async getProfile(): Promise<string> {
-    return 'This is a protected route'
+  @ApiBody({ type: LoginDto })
+  @ApiResponse({ status: HttpStatus.OK, type: LoginResponseDto, description: 'Login successful' })
+  async login(@Body() loginRequest: LoginDto): Promise<LoginResponseDto> {
+    return new LoginResponseDto(await this.authService.login(loginRequest))
   }
 }

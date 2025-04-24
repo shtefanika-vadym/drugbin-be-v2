@@ -20,6 +20,7 @@ lerna-debug.log*
 /.nyc_output
 
 generated
+./src/schemas
 
 # IDEs and editors
 /.idea

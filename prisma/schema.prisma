@@ -14,13 +14,72 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model User {
-  id           String   @id @default(uuid()) @map("id")
-  name         String   @map("name")
-  email        String   @unique @map("email")
-  passwordHash String   @map("password_hash")
-  createdAt    DateTime @default(now()) @map("created_at")
-  updatedAt    DateTime @updatedAt @map("updated_at")
+enum CollectionStatus {
+  COLLECTED
+  DISPOSED
 
-  @@map("user")
+  @@map("collection_status")
+}
+
+enum DrugCategory {
+  CYTOTOXIC
+  INHALERS
+  SHARPS
+  INSULIN
+  COMMON
+  SUPPLEMENTS
+  PSYCHOLEPTICS
+
+  @@map("drug_category")
+}
+
+enum DrugPack {
+  BOX
+  ENTITY
+  SYRINGE
+  INJECTABLE
+
+  @@map("drug_pack")
+}
+
+model User {
+  id           String       @id @default(uuid()) @map("id")
+  name         String       @map("name")
+  email        String       @unique @map("email")
+  passwordHash String       @map("password_hash")
+  created_at   DateTime     @default(now()) @map("created_at")
+  updated_at   DateTime     @updatedAt @map("updated_at")
+  collections  Collection[]
+
+  @@index([email], name: "users_email_idx")
+  @@map("users")
+}
+
+model Collection {
+  id        String           @id @default(uuid()) @map("id")
+  userId    String           @map("user_id")
+  weight    Float            @map("weight")
+  status    CollectionStatus @map("status")
+  updatedAt DateTime         @updatedAt @map("updated_at")
+  createdAt DateTime         @default(now()) @map("created_at")
+  user      User             @relation(fields: [userId], references: [id])
+  drugs     DrugItem[]
+
+  @@index([userId], name: "collections_user_id_idx")
+  @@map("collections")
+}
+
+model DrugItem {
+  id            String       @id @default(uuid()) @map("id")
+  collectionId  String       @map("collection_id")
+  name          String       @map("name")
+  ocr           String       @map("ocr")
+  pack          DrugPack     @map("pack")
+  weight        Float        @map("weight")
+  category      DrugCategory @map("category")
+  concentration String       @map("concentration")
+  collection    Collection   @relation(fields: [collectionId], references: [id])
+
+  @@index([collectionId], name: "drug_items_collection_id_idx")
+  @@map("drug_items")
 }

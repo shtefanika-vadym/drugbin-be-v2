@@ -2,7 +2,7 @@ import { Controller, Get, HttpStatus, UseGuards } from '@nestjs/common'
 import { AuthGuard } from '@nestjs/passport'
 import { ApiBearerAuth, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger'
 
-import { UserResponse, UserResponseType } from '@/user/models/user.response'
+import { CreateUserDto, UserResponseType } from '@/user/dto/create-user.dto'
 import { User } from '@/user/user.decorator'
 import { UserService } from '@/user/user.service'
 
@@ -17,7 +17,7 @@ export class UserController {
   @ApiOperation({ summary: 'Get user profile' })
   @ApiResponse({
     status: HttpStatus.OK,
-    type: UserResponse,
+    type: CreateUserDto,
     description: 'Profile retrieved successfully',
   })
   @ApiResponse({ status: HttpStatus.UNAUTHORIZED, description: 'Unauthorized' })

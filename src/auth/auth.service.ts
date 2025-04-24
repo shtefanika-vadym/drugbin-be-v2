@@ -8,9 +8,9 @@ import { Prisma } from 'generated/prisma'
 import { PrismaService } from '@/common/services/prisma.service'
 
 import type { AuthUser } from '@/auth/auth-user'
+import type { LoginDto } from '@/auth/dto/login.dto'
+import type { SignupDto } from '@/auth/dto/signup.dto'
 import type { JwtPayload } from '@/auth/jwt-payload'
-import type { LoginRequest } from '@/auth/models/request/login.request'
-import type { SignupRequest } from '@/auth/models/request/signup.request'
 
 import { UserService } from '@/user/user.service'
 
@@ -22,7 +22,7 @@ export class AuthService {
     private readonly jwtService: JwtService,
   ) {}
 
-  async signup(signupRequest: SignupRequest): Promise<void> {
+  async signup(signupRequest: SignupDto): Promise<void> {
     try {
       await this.prisma.user.create({
         data: {
@@ -49,7 +49,7 @@ export class AuthService {
     throw new UnauthorizedException()
   }
 
-  async login(loginRequest: LoginRequest): Promise<string> {
+  async login(loginRequest: LoginDto): Promise<string> {
     const user = await this.prisma.user.findFirst({
       where: {
         OR: [

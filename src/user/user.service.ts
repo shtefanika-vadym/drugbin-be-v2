@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common'
 
 import { PrismaService } from '@/common/services/prisma.service'
 
-import type { UserResponseType } from '@/user/models/user.response'
+import type { UserResponseType } from '@/user/dto/create-user.dto'
 
 @Injectable()
 export class UserService {

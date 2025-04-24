@@ -44,8 +44,10 @@ module.exports = {
           'module',
           '/generated/',
           '/common/',
+          '/schemas/',
           '/auth/',
           '/user/',
+          '/collection/',
           ['parent', 'sibling', 'index', 'absolute'],
         ],
         alphabetize: {
@@ -55,8 +57,8 @@ module.exports = {
       },
     ],
 
-    'no-console': 'error',
     'no-unused-vars': 'off',
+    'no-console': ['error', { allow: ['info', 'error'] }],
     '@typescript-eslint/no-unused-vars': [
       'error',
       {
